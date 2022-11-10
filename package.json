@@ -1,5 +1,5 @@
 {
-  "homepage": "DKTube",
+  "homepage": "https://github.com/dreeeik/AluraTube",
   "scripts": {
     "dev": "next dev",
     "lint": "next lint",
