@@ -1,13 +1,10 @@
 import config from "../config.json";
 import styled from "styled-components";
 import { CSSReset } from "../src/components/css.reset";
-import Menu from "../src/components/menu";
+import Menu from "../src/components/Menu/components/index";
 import { StyledTimeline } from "../src/components/Timeline";
 
 function HomePage() {
-  const estilosHomePage = {
-  //  backgroundColor: "red"
-  }
   return (
   <>
     <CSSReset/>
@@ -15,10 +12,9 @@ function HomePage() {
                 display: "flex",
                 flexDirection: "column",
                 flex: 1,
-                // backgroundColor: "red",
             }}>
       <Menu /> 
-      <Header/>  
+      <Header/> 
       <Timeline playlists={config.playlists}/>  
     </div>
     </>
@@ -26,7 +22,7 @@ function HomePage() {
 
   }
   export default HomePage
-
+//Fernanda Esteves 38327086
   const StyledHeader = styled.div`
     img {
       width: 80px;
@@ -39,12 +35,13 @@ function HomePage() {
       width: 100%;
       padding: 16px 32px;
       gap: 16px;
-      margin-top: 50px;
     }
   `; 
+  
   function Header() {
     return (
       <StyledHeader>
+        <StyledBanner />
         {/*<img src="banner" />*/}
         <section className="user-info">
         <img src={`https://github.com/${config.github}.png`}/>
@@ -58,14 +55,22 @@ function HomePage() {
         </div>
         </section>  
       </StyledHeader>
+      
     )
+    
   }
+  const StyledBanner = styled.div`
+    background-color: blue;
+    background-image: url("https://images.unsplash.com/photo-1667967951672-19627bcb1ee5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    height: 230px;
+`;
 
   function Timeline(props) {
     const playlistsNames = Object.keys(props.playlists);
 
       return (
         <StyledTimeline>
+          
             {playlistsNames.map((playlistName) => {
                 const videos = props.playlists[playlistName];
                 console.log(playlistName);

@@ -15,7 +15,7 @@ export const StyledTimeline = styled.div`
     font-weight: 500;
     object-fit: cover;
     width: 100%;
-    max-width: 210px;
+    max-width: 300px;
     height: auto;
   }
   section {
@@ -29,10 +29,10 @@ export const StyledTimeline = styled.div`
       display: grid;
       grid-gap: 16px;
       grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
-      grid-auto-flow: column;
       grid-auto-columns: minmax(200px,1fr);
-      overflow-x: scroll;
       scroll-snap-type: x mandatory;
+      border-bottom: double #000;
+      padding-bottom: 22px;
       a {
         scroll-snap-align: start;
         span {
