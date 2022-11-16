@@ -82,7 +82,7 @@ const StyledHeader = styled.div`
 
 const StyledBanner = styled.div`
     background-color: blue;
-    background-image: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80");
+    background-image: url("https://images.unsplash.com/photo-1667967951672-19627bcb1ee5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
     height: 230px;
 `;
 function Header() {
