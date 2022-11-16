@@ -34,14 +34,19 @@ const StyledSearch = styled.div`
   }
 `;
 
-export default function Search(){
-    const [Busca, setBusca] = React.useState("");
+//Home
+//Menu
+//Search
+
+export default function Search({ valorDoFiltro, setValorDoFiltro })  {
+    //const [valorDaBusca, setValorDaBusca] = React.useState("CORRETA");
+    //console.log("Search", valorDaBusca);
+    const valorDaBusca = valorDoFiltro;
+    const setValorDaBusca = setValorDoFiltro;
+
     return (
         <StyledSearch>
-            <input type="text" onChange={(e) => {
-                setBusca(e.target.value);
-            }} />
-
+            <input type="text" onChange={(e) => setValorDaBusca(e.target.value)} value={valorDaBusca} />
             <button>
                 🔎
             </button>

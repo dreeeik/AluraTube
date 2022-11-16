@@ -1,98 +1,144 @@
+import React from "react";
 import config from "../config.json";
 import styled from "styled-components";
-import { CSSReset } from "../src/components/css.reset";
-import Menu from "../src/components/Menu/components/index";
+import Menu from "../src/components/Menu/Index";
 import { StyledTimeline } from "../src/components/Timeline";
+import { createClient } from "@supabase/supabase-js";
+import { videoService } from "../src/components/services/videoService";
+
 
 function HomePage() {
+  const Service = videoService();
+  const [valorDoFiltro, setValorDoFiltro] = React.useState(" ");
+  const [playlists, setPlaylists] = React.useState({});
+
+  React.useEffect(() => {
+    console.log("useEffect");
+    Service
+      .getAllVideos()
+      .then((dados) => {
+        console.log(dados.data);
+
+        const novasPlaylists = { ...playlists }
+        dados.data.forEach((video) => {
+          if (!novasPlaylists[video.playlist]) {
+            novasPlaylists[video.playlist] = [];
+          }
+          novasPlaylists[video.playlist].push(video);
+        })
+        setPlaylists(novasPlaylists);
+      });
+
+  }, []);
+
+  console.log("Playlists Pronto", playlists);
+
   return (
-  <>
-    <CSSReset/>
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                flex: 1,
-            }}>
-      <Menu /> 
-      <Header/> 
-      <Timeline playlists={config.playlists}/>  
-    </div>
+    <>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        // backgroundColor: "red",
+      }}>
+        {/* Prop Drilling */}
+        <Menu valorDoFiltro={valorDoFiltro} setValorDoFiltro={setValorDoFiltro} />
+        <Header />
+        <Timeline searchValue={valorDoFiltro} playlists={config.playlists}>
+          Conteúdo
+        </Timeline>
+      </div>
     </>
   );
+}
 
-  }
-  export default HomePage
-//Fernanda Esteves 38327086
-  const StyledHeader = styled.div`
+export default HomePage
+
+// function Menu() {
+//     return (
+//         <div>
+//             Menu
+//         </div>
+//     )
+// }
+
+
+const StyledHeader = styled.div`
+    background-color: ${({ theme }) => theme.backgroundLevel1};
+
     img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
     }
-    .user-info{
-      display:flex;
-      align-items: center;
-      width: 100%;
-      padding: 16px 32px;
-      gap: 16px;
+    .user-info {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 16px 32px;
+        gap: 16px;
     }
-  `; 
-  
-  function Header() {
-    return (
-      <StyledHeader>
-        <StyledBanner />
-        {/*<img src="banner" />*/}
-        <section className="user-info">
-        <img src={`https://github.com/${config.github}.png`}/>
-        <div>
-        <h2>
-        {config.name}
-        </h2>
-        <p>
-        {config.job}
-        </p>
-        </div>
-        </section>  
-      </StyledHeader>
-      
-    )
-    
-  }
-  const StyledBanner = styled.div`
-    background-color: blue;
-    background-image: url("https://images.unsplash.com/photo-1667967951672-19627bcb1ee5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
-    height: 230px;
 `;
 
-  function Timeline(props) {
-    const playlistsNames = Object.keys(props.playlists);
+const StyledBanner = styled.div`
+    background-color: blue;
+    background-image: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80");
+    height: 230px;
+`;
+function Header() {
+  return (
+    <StyledHeader>
+      <StyledBanner />
+      <section className="user-info">
+        <img src={`https://github.com/${config.github}.png`} />
+        <div>
+          <h2>
+            {config.name}
+          </h2>
+          <p>
+            {config.job}
+          </p>
+        </div>
+      </section>
+    </StyledHeader>
+  )
+}
 
-      return (
-        <StyledTimeline>
-          
-            {playlistsNames.map((playlistName) => {
-                const videos = props.playlists[playlistName];
-                console.log(playlistName);
-                console.log(videos);
-                return (
-                    <section>
-                        <h2>{playlistName}</h2>
-                        <div>
-                            {videos.map((video) => {
-                                return (
-                                    <a href={video.url}>
-                                        <img src={video.thumb} />
-                                        <span>
-                                            {video.title}
-                                        </span>
-                                    </a>
-                                )
-                            })}
-                        </div>
-                    </section>
-                )
-            })}
-        </StyledTimeline>
-    )
-  }
+function Timeline({ searchValue, ...propriedades }) {
+  // console.log("Dentro do componente", propriedades.playlists);
+  const playlistNames = Object.keys(propriedades.playlists);
+  // Statement
+  // Retorno por expressão
+  return (
+    <StyledTimeline>
+      {playlistNames.map((playlistName) => {
+        const videos = propriedades.playlists[playlistName];
+        //console.log(playlistName);
+        //console.log(videos);
+        return (
+          <section key={playlistName}>
+            <h2>{playlistName}</h2>
+            <div>
+              {videos
+                .filter((video) => {
+                  const titleNormalized = video.title.toLowerCase();
+                  const searchValueNormalized = searchValue.toLowerCase();
+                  return titleNormalized.includes(searchValueNormalized)
+                })
+                .map((video) => {
+                  return (
+                    <a key={video.url} href={video.url}>
+                      <img src={video.thumb} />
+                      <span>
+                        {video.title}
+                      </span>
+                    </a>
+                  )
+                })}
+            </div>
+          </section>
+        )
+      })}
+    </StyledTimeline>
+  )
+}
